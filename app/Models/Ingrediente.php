@@ -13,4 +13,9 @@ class Ingrediente extends Model
         'custo_unitario',
         'estoque_minimo',
     ];
+
+    public function fichaTecnicas()
+    {
+        return $this->hasMany(FichaTecnica::class);
+    }
 }

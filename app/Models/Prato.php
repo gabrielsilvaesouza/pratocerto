@@ -14,4 +14,9 @@ class Prato extends Model
         'descricao',
         'preco_venda',
     ];
+
+    public function fichaTecnicas()
+    {
+        return $this->hasMany(FichaTecnica::class);
+    }
 }
