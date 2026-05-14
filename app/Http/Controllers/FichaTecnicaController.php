@@ -13,7 +13,9 @@ class FichaTecnicaController extends Controller
     {
         $fichasTecnicas = FichaTecnica::with(['prato', 'ingrediente'])->get();
 
-        return view('fichas-tecnicas.index', compact('fichasTecnicas'));
+        $pratos = Prato::with(['fichaTecnicas.ingrediente'])->get();
+
+        return view('fichas-tecnicas.index', compact('fichasTecnicas', 'pratos'));
     }
 
     public function create()

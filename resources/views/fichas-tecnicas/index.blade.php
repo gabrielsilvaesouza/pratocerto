@@ -66,5 +66,50 @@
             @endforelse
         </tbody>
     </table>
+    <br><br>
+
+<h2>Resumo de custos por prato</h2>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Prato</th>
+            <th>Preço de venda</th>
+            <th>Custo total</th>
+            <th>Margem estimada</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach ($pratos as $prato)
+            @php
+                $custoTotal = 0;
+
+                foreach ($prato->fichaTecnicas as $item) {
+                    $custoTotal += $item->quantidade_utilizada * $item->ingrediente->custo_unitario;
+                }
+
+                $margemEstimada = $prato->preco_venda - $custoTotal;
+            @endphp
+
+            <tr>
+                <td>{{ $prato->nome }}</td>
+                <td>R$ {{ number_format($prato->preco_venda, 2, ',', '.') }}</td>
+                <td>R$ {{ number_format($custoTotal, 2, ',', '.') }}</td>
+                <td>
+                    @if ($margemEstimada < 0)
+                        <span style="color: red;">
+                            R$ {{ number_format($margemEstimada, 2, ',', '.') }}
+                        </span>
+                    @else
+                        <span style="color: green;">
+                            R$ {{ number_format($margemEstimada, 2, ',', '.') }}
+                        </span>
+                    @endif
+                </td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
 </body>
 </html>
