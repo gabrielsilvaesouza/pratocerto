@@ -3,51 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>Editar Prato - PratoCerto</title>
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
     <nav>
-        <a href="{{ url('/') }}">Início</a> |
-        <a href="{{ route('ingredientes.index') }}">Ingredientes</a> |
-        <a href="{{ route('pratos.index') }}">Pratos</a> |
+        <a href="{{ url('/') }}">Início</a>
+        <a href="{{ route('ingredientes.index') }}">Ingredientes</a>
+        <a href="{{ route('pratos.index') }}">Pratos</a>
         <a href="{{ route('fichas-tecnicas.index') }}">Ficha Técnica</a>
     </nav>
 
-    <hr>
-    <h1>Editar prato: {{ $prato->nome }}</h1>
+    <div class="container">
+        <h1>Editar prato: {{ $prato->nome }}</h1>
 
-    @if ($errors->any())
-        <div style="color: red;">
-            <p>Existem erros no formulário:</p>
+        @if ($errors->any())
+            <div class="alert-error">
+                <p>Existem erros no formulário:</p>
 
-            <ul>
-                @foreach ($errors->all() as $erro)
-                    <li>{{ $erro }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+                <ul>
+                    @foreach ($errors->all() as $erro)
+                        <li>{{ $erro }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <form action="{{ route('pratos.update', $prato->id) }}" method="POST">
-        @csrf
-        @method('PUT')
+        <form action="{{ route('pratos.update', $prato->id) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-        <label for="nome">Nome do prato:</label><br>
-        <input type="text" name="nome" id="nome" value="{{ old('nome', $prato->nome) }}">
-        <br><br>
+            <label for="nome">Nome do prato:</label><br>
+            <input type="text" name="nome" id="nome" value="{{ old('nome', $prato->nome) }}">
+            <br><br>
 
-        <label for="descricao">Descrição:</label><br>
-        <textarea name="descricao" id="descricao" rows="4" cols="40">{{ old('descricao', $prato->descricao) }}</textarea>
-        <br><br>
+            <label for="descricao">Descrição:</label><br>
+            <textarea name="descricao" id="descricao" rows="4" cols="40">{{ old('descricao', $prato->descricao) }}</textarea>
+            <br><br>
 
-        <label for="preco_venda">Preço de venda:</label><br>
-        <input type="number" step="0.01" name="preco_venda" id="preco_venda" value="{{ old('preco_venda', $prato->preco_venda) }}">
-        <br><br>
+            <label for="preco_venda">Preço de venda:</label><br>
+            <input type="number" step="0.01" name="preco_venda" id="preco_venda" value="{{ old('preco_venda', $prato->preco_venda) }}">
+            <br><br>
 
-        <button type="submit">Atualizar prato</button>
-    </form>
+            <button type="submit" class="btn">
+                Atualizar prato
+            </button>
 
-    <br>
-
-    <a href="{{ route('pratos.index') }}">Voltar para a lista</a>
+            <a href="{{ route('pratos.index') }}" class="btn btn-secondary">
+                Voltar para a lista
+            </a>
+        </form>
+    </div>
 </body>
 </html>
