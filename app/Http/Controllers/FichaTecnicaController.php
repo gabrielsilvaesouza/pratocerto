@@ -30,14 +30,33 @@ class FichaTecnicaController extends Controller
     {
         $request->validate([
             'prato_id' => 'required|exists:pratos,id',
-            'ingrediente_id' => 'required|exists:ingredientes,id',
-            'quantidade_utilizada' => 'required|numeric|min:0.001',
+            'ingredientes' => 'required|array',
+            'ingredientes.*.ingrediente_id' => 'required|exists:ingredientes,id',
+            'ingredientes.*.quantidade_utilizada' => 'nullable|numeric|min:0.001',
         ]);
 
-        FichaTecnica::create($request->all());
+        $algumIngredienteAdicionado = false;
+
+        foreach ($request->ingredientes as $item) {
+            if (!empty($item['quantidade_utilizada'])) {
+                FichaTecnica::create([
+                    'prato_id' => $request->prato_id,
+                    'ingrediente_id' => $item['ingrediente_id'],
+                    'quantidade_utilizada' => $item['quantidade_utilizada'],
+                ]);
+
+                $algumIngredienteAdicionado = true;
+            }
+        }
+
+        if (!$algumIngredienteAdicionado) {
+            return redirect()->back()
+                ->withErrors(['quantidade_utilizada' => 'Informe a quantidade utilizada em pelo menos um ingrediente.'])
+                ->withInput();
+        }
 
         return redirect()->route('fichas-tecnicas.index')
-            ->with('success', 'Item adicionado à ficha técnica com sucesso!');
+            ->with('success', 'Ficha técnica cadastrada com sucesso!');
     }
 
     public function edit(FichaTecnica $fichas_tecnica)
@@ -45,10 +64,15 @@ class FichaTecnicaController extends Controller
         $pratos = Prato::all();
         $ingredientes = Ingrediente::all();
 
+        $itensFicha = FichaTecnica::with('ingrediente')
+            ->where('prato_id', $fichas_tecnica->prato_id)
+            ->get();
+
         return view('fichas-tecnicas.edit', [
             'fichaTecnica' => $fichas_tecnica,
             'pratos' => $pratos,
             'ingredientes' => $ingredientes,
+            'itensFicha' => $itensFicha,
         ]);
     }
 
@@ -56,14 +80,25 @@ class FichaTecnicaController extends Controller
     {
         $request->validate([
             'prato_id' => 'required|exists:pratos,id',
-            'ingrediente_id' => 'required|exists:ingredientes,id',
-            'quantidade_utilizada' => 'required|numeric|min:0.001',
+            'ingredientes' => 'required|array',
+            'ingredientes.*.ingrediente_id' => 'required|exists:ingredientes,id',
+            'ingredientes.*.quantidade_utilizada' => 'required|numeric|min:0.001',
         ]);
 
-        $fichas_tecnica->update($request->all());
+        $pratoOriginalId = $fichas_tecnica->prato_id;
+
+        FichaTecnica::where('prato_id', $pratoOriginalId)->delete();
+
+        foreach ($request->ingredientes as $item) {
+            FichaTecnica::create([
+                'prato_id' => $request->prato_id,
+                'ingrediente_id' => $item['ingrediente_id'],
+                'quantidade_utilizada' => $item['quantidade_utilizada'],
+            ]);
+        }
 
         return redirect()->route('fichas-tecnicas.index')
-            ->with('success', 'Item da ficha técnica atualizado com sucesso!');
+            ->with('success', 'Ficha técnica atualizada com sucesso!');
     }
 
     public function destroy(FichaTecnica $fichas_tecnica)
