@@ -6,7 +6,7 @@ use App\Http\Controllers\PratoController;
 use App\Http\Controllers\FichaTecnicaController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::resource('ingredientes', IngredienteController::class);

@@ -5,6 +5,14 @@
     <title>Cadastrar Ingrediente - PratoCerto</title>
 </head>
 <body>
+    <nav>
+        <a href="{{ url('/') }}">Início</a> |
+        <a href="{{ route('ingredientes.index') }}">Ingredientes</a> |
+        <a href="{{ route('pratos.index') }}">Pratos</a> |
+        <a href="{{ route('fichas-tecnicas.index') }}">Ficha Técnica</a>
+    </nav>
+
+    <hr>
     <h1>Cadastrar novo ingrediente</h1>
 
     @if ($errors->any())
